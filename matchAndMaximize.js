@@ -1,10 +1,9 @@
-const { BitSet } = require("bitset");
 const { PriorityQueue } = require("@datastructures-js/priority-queue");
 const { findGCDWithCache } = require("./Helpers/NumericHelpers");
 const { countCharactersInName } = require("./Helpers/InputHelpers")
 const _= require("lodash");
 
-const calculateAndRankScores = (driverArray, evenDestinationArray, oddDestinationArray, driverTaken, destinationTaken, gcdBitset) => {
+const calculateAndRankScores = (driverArray, evenDestinationArray, oddDestinationArray, driverTaken, destinationTaken, cache) => {
     const matchComparator = (match1, match2) => {
         if (match1.score > match2.score)
             return -1; // push match down on queue (towards front)
@@ -18,12 +17,12 @@ const calculateAndRankScores = (driverArray, evenDestinationArray, oddDestinatio
         const {vowelCount, consonantCount} = countCharactersInName(driver);
 
         evenDestinationArray.filter(({destinationIndex}) => !_.isEmpty(destinationTaken) || !(destinationIndex in destinationTaken)).map(({destinationIndex, destinationAddress}) => { // filter and map through array of destinations; skipping over any index that has already been processed
-            const driverSharesCommonFactor = findGCDWithCache(Math.max(driver.length, destinationAddress.length), Math.min(driver.length, destinationAddress.length), gcdBitset) != 1; // if a gcd is found between a driver and a destination then the suitability score is increased by 1.5
+            const driverSharesCommonFactor = findGCDWithCache(Math.max(driver.length, destinationAddress.length), Math.min(driver.length, destinationAddress.length), cache) != 1; // if a gcd is found between a driver and a destination then the suitability score is increased by 1.5
             rankedMatchesByVowelScore.push({driverIndex, destinationIndex, score: vowelCount * (driverSharesCommonFactor ? 2.25 : 1.5)}); // update vowel score to be vowel count * 1.5 times additional 1.5 if the driver shares a common factor with the destination
         });
 
         oddDestinationArray.filter(({destinationIndex}) => !_.isEmpty(destinationTaken) || !(destinationIndex in destinationTaken)).map (({destinationIndex, destinationAddress}) => { // filter and map through array of destinations; skipping over any index that has already been processed
-            const driverSharesCommonFactor = findGCDWithCache(Math.max(driver.length, destinationAddress.length), Math.min(driver.length, destinationAddress.length), gcdBitset) != 1; // if a gcd is found between a driver and a destination then the suitability score is increased by 1.5
+            const driverSharesCommonFactor = findGCDWithCache(Math.max(driver.length, destinationAddress.length), Math.min(driver.length, destinationAddress.length), cache) != 1; // if a gcd is found between a driver and a destination then the suitability score is increased by 1.5
             rankedMatchesByConsonantScore.push({driverIndex, destinationIndex, score: consonantCount * (driverSharesCommonFactor ? 1.5 : 1)}); // update consonant score to be consonant count times additional 1.5 if the driver shares a common factor with the destination
         });
     })
@@ -80,11 +79,11 @@ const generateBestShippingMatchesResult = (rankedMatchesByVowelScore, rankedMatc
 
 
 const matchAndMaximize = (driverArray, destinationArray, evenDestinationArray, oddDestinationArray, stop=100) => {
-    const bestMatches = [], driverTaken = {}, destinationTaken = {}, gcdBitset = new Array(100).fill(new BitSet("0x65")); // by using a bitset cache, we are able to return early if any pair of integers devolves into a common sequence of factors (small optimization)
+    const bestMatches = [], driverTaken = {}, destinationTaken = {}, cache = new Array(101).fill(0).map(() => new Set());; // by using a set cache, we are able to return early if any pair of integers devolves into a common sequence of factors (small optimization)
     var totalMatched = 0, totalScore = 0;
 
     for (let iterations=0; totalMatched < Math.min(driverArray.length, destinationArray.length) && iterations < stop; iterations++) { // stop when either specified or all the available drivers / destinations have been processed
-        const {rankedMatchesByVowelScore, rankedMatchesByConsonantScore} = calculateAndRankScores(driverArray, evenDestinationArray, oddDestinationArray, driverTaken, destinationTaken, gcdBitset); // rank the value and consonant scores
+        const {rankedMatchesByVowelScore, rankedMatchesByConsonantScore} = calculateAndRankScores(driverArray, evenDestinationArray, oddDestinationArray, driverTaken, destinationTaken, cache); // rank the value and consonant scores
         const {currentMatched, currentScore} = generateBestShippingMatchesResult(rankedMatchesByVowelScore, rankedMatchesByConsonantScore, driverArray, destinationArray, driverTaken, destinationTaken, bestMatches); // get current interation's total to increment the running totals
         totalMatched+=currentMatched, totalScore+=currentScore;
     }

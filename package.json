@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha Tests/**Test.js",
+    "test": "mocha Tests/**Tests.js",
     "start": "node index.js",
     "dev": "nodemon index.js"
   },

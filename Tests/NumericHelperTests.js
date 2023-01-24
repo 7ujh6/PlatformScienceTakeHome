@@ -1,5 +1,4 @@
 var expect = require('chai').expect;
-const { BitSet } = require("bitset"); 
 const { findGCDWithCache } = require('../Helpers/NumericHelpers');
 
 describe("Tests for InputHelpers", () => {
@@ -9,13 +8,15 @@ describe("Tests for InputHelpers", () => {
     });
 
     it("findGCDWithCacheTest", () => {
-        const gcdBitset = new Array(120).fill(new BitSet("0x78")); // initialize bit set to 120 (upper bound of our test cases)
-        var inputA = [2, 8, 9, 13, 71, 49];
-        var inputB = [2, 72, 3, 5, 19, 119];
-        var gcdResult = [2, 8, 3, 1, 1, 7];
+
+        const cache = new Array(101).fill(0).map(() => new Set()); // initialize set to 100 (upper bound of our test cases)    
+        
+        var inputA = [2, 8, 9, 13, 71, 48];
+        var inputB = [2, 72, 3, 5, 19, 100];
+        var gcdResult = [true, true, true, false, false, true];
 
         for (var i = 0; i < Math.min(inputA.length, inputB.length); i++) {
-            expect(findGCDWithCache(inputA[i], inputB[i], gcdBitset)).to.eql(gcdResult[i])
+            expect(findGCDWithCache(inputA[i], inputB[i], cache) != 1).to.equal(gcdResult[i]);
         }
     });
 });

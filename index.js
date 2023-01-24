@@ -12,8 +12,8 @@ app.get('/', (_, response) => {
 app.get('/maximize', (_, response) => {
     const {driverArray, destinationArray, evenDestinationArray, oddDestinationArray} = processInput(); // recieve and destructure the processed input
     const maxShipmentMatchingResult = matchAndMaximize(driverArray, destinationArray, evenDestinationArray, oddDestinationArray); // get the max suitability score from that input
-    if (Object.keys(maxShipmentMatchingResult).length == 3) {
-        response.json(maxShipmentMatchingResult); // server json response on the /maximize endpoint
+    if (Object.keys(maxShipmentMatchingResult).length == 3) { // program was able to process the input
+        response.json(maxShipmentMatchingResult); // serve json response on the /maximize endpoint
     } else {
         response.send('<h1>Please Submit Valid Input...</h1>');
     }
