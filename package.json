@@ -1,0 +1,22 @@
+{
+  "name": "platformsciencetakehome",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha Tests/**Test.js",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@datastructures-js/priority-queue": "^6.2.0",
+    "bitset": "^5.1.1",
+    "chai": "^4.3.7",
+    "express": "^4.18.2",
+    "lodash": "^4.17.21",
+    "mocha": "^10.2.0",
+    "nodemon": "^2.0.20"
+  }
+}
