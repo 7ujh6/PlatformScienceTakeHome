@@ -9,7 +9,7 @@ describe("Tests for InputHelpers", () => {
     });
 
     it("findGCDWithCacheTest", () => {
-        const gcdBitset = new Array(120).fill(new BitSet("0x78"));
+        const gcdBitset = new Array(120).fill(new BitSet("0x78")); // initialize bit set to 120 (upper bound of our test cases)
         var inputA = [2, 8, 9, 13, 71, 49];
         var inputB = [2, 72, 3, 5, 19, 119];
         var gcdResult = [2, 8, 3, 1, 1, 7];

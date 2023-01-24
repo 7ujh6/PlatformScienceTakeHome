@@ -80,7 +80,7 @@ const generateBestShippingMatchesResult = (rankedMatchesByVowelScore, rankedMatc
 
 
 const matchAndMaximize = (driverArray, destinationArray, evenDestinationArray, oddDestinationArray, stop=100) => {
-    const bestMatches = [], driverTaken = {}, destinationTaken = {}, gcdBitset = new Array(100).fill(new BitSet("0x65"));
+    const bestMatches = [], driverTaken = {}, destinationTaken = {}, gcdBitset = new Array(100).fill(new BitSet("0x65")); // by using a bitset cache, we are able to return early if any pair of integers devolves into a common sequence of factors (small optimization)
     var totalMatched = 0, totalScore = 0;
 
     for (let iterations=0; totalMatched < Math.min(driverArray.length, destinationArray.length) && iterations < stop; iterations++) { // stop when either specified or all the available drivers / destinations have been processed
